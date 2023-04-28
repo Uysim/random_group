@@ -1,6 +1,12 @@
 module TeamService
-  # This class is responsible for generating teams
+  # This class is responsible for generating teams for blind date
   class Generator < ApplicationService
+    attr_reader :blind_date
+
+    def initialize(blind_date)
+      @blind_date = blind_date
+    end
+
     def call
       teams = []
       team_size = TeamService::TeamSizeCalculator.call
@@ -8,7 +14,7 @@ module TeamService
 
       Team.transaction do
         while employees.any?
-          team = Team.create!
+          team = Team.create!(blind_date: blind_date)
           assign_employees!(team, employees.shift(team_size))
           find_leader!(team)
           teams << team
@@ -19,6 +25,15 @@ module TeamService
     end
 
     private
+
+    def create_blind_date
+      date =  Date.today.end_of_week - 2.days
+      date += 1.week if date <= Date.today
+
+      BlindDate.create!(
+        date: Date.today.end_of_week - 2.days
+      )
+    end
 
     def assign_employees!(team, employees)
       employees.each do |employee|

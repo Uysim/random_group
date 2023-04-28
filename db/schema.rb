@@ -10,7 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_28_050001) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_28_080313) do
+  create_table "blind_dates", force: :cascade do |t|
+    t.date "date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "employees", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -31,8 +37,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_28_050001) do
   create_table "teams", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "blind_date_id", null: false
+    t.index ["blind_date_id"], name: "index_teams_on_blind_date_id"
   end
 
   add_foreign_key "mapping_employee_teams", "employees"
   add_foreign_key "mapping_employee_teams", "teams"
+  add_foreign_key "teams", "blind_dates"
 end

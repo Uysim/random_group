@@ -2,10 +2,12 @@ require 'rails_helper'
 
 RSpec.describe TeamService::Generator do
   let!(:employees) { create_list(:employee, 10) }
+  let!(:blind_date) { create(:blind_date) }
 
   it 'generates teams with equal size' do
-    teams = described_class.call
+    described_class.call(blind_date)
 
+    teams = blind_date.teams
     expect(teams.size).to be > 1
     team_size = teams.first.employees.count
     teams.each do |team|
