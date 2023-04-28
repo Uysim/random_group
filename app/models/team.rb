@@ -1,15 +1,12 @@
 # == Schema Information
 #
-# Table name: employees
+# Table name: teams
 #
 #  id         :integer          not null, primary key
-#  name       :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
-class Employee < ApplicationRecord
+class Team < ApplicationRecord
   has_many :mapping_employee_teams
-  has_many :teams, through: :mapping_employee_teams
-
-  validates :name, presence: true
+  has_many :employees, through: :mapping_employee_teams
 end

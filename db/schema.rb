@@ -10,11 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_28_043849) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_28_050001) do
   create_table "employees", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
+  create_table "mapping_employee_teams", force: :cascade do |t|
+    t.integer "team_id", null: false
+    t.integer "employee_id", null: false
+    t.string "role", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employee_id"], name: "index_mapping_employee_teams_on_employee_id"
+    t.index ["team_id", "employee_id"], name: "index_mapping_employee_teams_on_team_id_and_employee_id", unique: true
+    t.index ["team_id"], name: "index_mapping_employee_teams_on_team_id"
+  end
+
+  create_table "teams", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "mapping_employee_teams", "employees"
+  add_foreign_key "mapping_employee_teams", "teams"
 end
