@@ -24,9 +24,22 @@ class MappingEmployeeTeam < ApplicationRecord
   belongs_to :team
   belongs_to :employee
 
-  validates :role, presence: true
-  validates :employee_id, uniqueness: { scope: :team_id }
-
   # use string instead of integer for data consistency
   enum role: { member: 'member', leader: 'leader' }
+
+  validates :role, presence: true
+  validates :employee_id, uniqueness: { scope: :team_id }
+  validate :single_leader_per_team, if: :leader?
+
+  private
+
+  def single_leader_per_team
+    leader = self.class.where.not(
+      employee_id: employee_id
+    ).find_by(
+      team_id: team_id, role: 'leader'
+    )
+
+    errors.add(:role, 'cannot have multiple leaders') if leader.present?
+  end
 end

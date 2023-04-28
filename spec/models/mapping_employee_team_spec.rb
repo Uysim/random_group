@@ -27,6 +27,22 @@ RSpec.describe MappingEmployeeTeam, type: :model do
     subject { build(:mapping_employee_team) }
     it { is_expected.to validate_presence_of(:role) }
     it { is_expected.to validate_uniqueness_of(:employee_id).scoped_to(:team_id) }
+
+    it 'should validate single leader per team' do
+      team = create(:team)
+      leader = create(:employee)
+      member = create(:employee)
+
+      create(:mapping_employee_team, team: team, employee: leader, role: 'leader')
+
+      expect {
+        create(:mapping_employee_team, team: team, employee: leader, role: 'leader')
+      }.to raise_error(ActiveRecord::RecordInvalid)
+
+      expect {
+        create(:mapping_employee_team, team: team, employee: member, role: 'leader')
+      }.to raise_error(ActiveRecord::RecordInvalid)
+    end
   end
 
   context 'associations' do
