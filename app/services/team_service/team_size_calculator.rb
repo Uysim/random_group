@@ -18,7 +18,7 @@ module TeamService
 
       last_team_size = total_employees % expected_team_size
       if last_team_size.zero? || last_team_size.between?(expected_team_size - TEAM_DIFFERENCE, expected_team_size + TEAM_DIFFERENCE)
-        return expected_team_size
+        return expected_team_size, total_teams
       end
 
       recalculate
